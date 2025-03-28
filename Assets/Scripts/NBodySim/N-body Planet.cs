@@ -65,6 +65,7 @@ public class N_bodyPlanet : MonoBehaviour
         drawCoordinateSystem(coordSystemScale);
     }
 
+    // Draws orbital coordinate system for planet, considering that it's orbiting the closest body
     void drawCoordinateSystem(float scale)
     {
         //Draw velocity vector

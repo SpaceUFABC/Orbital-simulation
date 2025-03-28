@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class NBodySupervisor : MonoBehaviour
+public class NBodySimController : MonoBehaviour
 {
     N_bodyPlanet[] bodies;
     public float timeStep = 0.01f;
