@@ -65,11 +65,15 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.39f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\EarthCentered\Earth.cs" />
     <Compile Include="Assets\Scripts\2BodySim\TwoBodyObj.cs" />
     <Compile Include="Assets\Scripts\NBodySim\N-body Planet.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\EarthCentered\Satellite.cs" />
+    <Compile Include="Assets\Scripts\EarthCentered\EarthCenteredSimController.cs" />
     <Compile Include="Assets\Scripts\NBodySim\NBodySimController.cs" />
     <Compile Include="Assets\Scripts\2BodySim\TwoBodySimController.cs" />
+    <Compile Include="Assets\Scripts\EarthCentered\OrbitTracing\OrbitTracer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
