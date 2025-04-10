@@ -25,13 +25,13 @@ public class EarthCenteredSimController : MonoBehaviour
         foreach (Satellite body in bodies)
         {
             Vector3 acceleration = getAcceleration(body);
-            Vector3 velocity = acceleration * timeStep;
+            Vector3 velocity = acceleration * Time.fixedDeltaTime;
             body.updateVelocity(velocity);
         }
 
         foreach (Satellite body in bodies)
         {
-            body.updatePosition(timeStep);
+            body.updatePosition(Time.fixedDeltaTime);
         }
 
         // Draw the orbits of each body

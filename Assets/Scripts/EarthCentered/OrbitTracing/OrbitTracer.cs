@@ -24,7 +24,6 @@ public class OrbitTracer
     
     public MomentaryOrbitalElements[] CalculateOrbit()
     {
-        bool passedAxis = false; // Flag to check if the satellite has passed the axis
         // Definition of vector arrays to store positions, velocities, and momentary orbital elements
         // The size of the arrays is arbitrary and can be adjusted based on the maximum expected number of steps in the simulation
         Vector3[] positions = new Vector3[this.maxSteps];
@@ -40,7 +39,9 @@ public class OrbitTracer
         momentaryOrbitalElements[0].tangentialVelocity = velocities[0].magnitude;
         momentaryOrbitalElements[0].position = positions[0];
 
+        // Initialization of variables to be used in the loop
         int i = 0;
+        float totalAnomalyChange = 0f;
 
         while (i + 1 < this.maxSteps)
         {
@@ -49,23 +50,26 @@ public class OrbitTracer
             velocities[i + 1] = velocities[i] + acceleration * timeStep;
             positions[i + 1] = positions[i] + velocities[i + 1] * timeStep;
 
-            //Debug.Log($"Step: {i} Position: {positions[i + 1]} Velocity: {velocities[i + 1]} Acceleration: {acceleration}");
-
             // Calculate the true anomaly
             float trueAnomaly = GetTrueAnomaly(positions[i + 1], velocities[i + 1]);
 
-            // Check if the orbit is complete
-            if (momentaryOrbitalElements[0].trueAnomaly > trueAnomaly && passedAxis)
+            float anomalyChange = Mathf.Abs(trueAnomaly - momentaryOrbitalElements[i].trueAnomaly);
+            if (anomalyChange < -180f)
+            {
+                anomalyChange += 360f;
+            }
+            else if (anomalyChange > 180f)
+            {
+                anomalyChange -= 360f;
+            }
+
+            totalAnomalyChange += anomalyChange;
+
+            // Check if the orbit is complete (total anomaly change exceeds 360 degrees)
+            if (totalAnomalyChange >= 360f)
             {
                 break;
             }
-
-            // Check if the satellite has passed the axis
-            else if (momentaryOrbitalElements[i].trueAnomaly - trueAnomaly > 180)
-            {
-                passedAxis = true;
-            }
-
 
             // Update the momentary orbital elements
             momentaryOrbitalElements[i + 1].trueAnomaly = trueAnomaly;
@@ -130,6 +134,7 @@ public class OrbitTracer
 
     private float GetTrueAnomaly(Vector3 position, Vector3 velocity)
     {
+        // Position vector relative to the Earth's center
         Vector3 r = position - earth.gameObject.transform.position;
         Vector3 v = velocity;
 
@@ -137,12 +142,23 @@ public class OrbitTracer
         Vector3 h = Vector3.Cross(r, v);
 
         // Calculate the eccentricity vector
-        Vector3 e = Vector3.Cross(h, v)/(float)(gravitationalConstant * earth.mass) - r.normalized;
+        Vector3 e = (Vector3.Cross(v, h) / (float)(gravitationalConstant * earth.mass)) - r.normalized;
 
-        // Calculate the true anomaly
-        float trueAnomaly = Mathf.Acos(Vector3.Dot(e, r) / (e.magnitude * r.magnitude));
+        // Normalize the eccentricity vector and position vector
+        Vector3 eNormalized = e.normalized;
+        Vector3 rNormalized = r.normalized;
 
-        return trueAnomaly * Mathf.Rad2Deg; // Convert to degrees
+        // Calculate the true anomaly using the dot product
+        float trueAnomaly = Mathf.Acos(Vector3.Dot(eNormalized, rNormalized));
+
+        // Adjust the true anomaly based on the direction of the cross product
+        if (Vector3.Dot(Vector3.Cross(e, r), h) < 0)
+        {
+            trueAnomaly = 2 * Mathf.PI - trueAnomaly;
+        }
+
+        // Convert the true anomaly to degrees
+        return trueAnomaly * Mathf.Rad2Deg;
     }
 
     private float GetInclination(Vector3 position, Vector3 velocity)
