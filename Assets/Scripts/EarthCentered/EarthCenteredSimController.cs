@@ -4,7 +4,6 @@ using static OrbitTracer;
 public class EarthCenteredSimController : MonoBehaviour
 {
     Satellite[] bodies;
-    public float timeStep = 0.01f;
     public float orbitTimeStep = 1f;
     public float gravitationalConstant = 10f;
     public int orbitMaxSteps = 1000; // Maximum number of steps for the orbit tracer

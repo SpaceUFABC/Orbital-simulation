@@ -393,9 +393,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeStep: 0.01
-  orbitTimeStep: 0.01
+  orbitTimeStep: 0.7
   gravitationalConstant: 10
-  orbitMaxSteps: 10000
+  orbitMaxSteps: 20
   earth: {fileID: 0}
 --- !u!4 &772206317
 Transform:

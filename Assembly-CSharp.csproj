@@ -66,14 +66,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\EarthCentered\Earth.cs" />
+    <Compile Include="Assets\Scripts\EarthCentered\Orbit Tracing\OrbitTracer.cs" />
     <Compile Include="Assets\Scripts\2BodySim\TwoBodyObj.cs" />
+    <Compile Include="Assets\Scripts\EarthCentered\Orbit Calculation\OrbitTracer.cs" />
     <Compile Include="Assets\Scripts\NBodySim\N-body Planet.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\EarthCentered\Satellite.cs" />
     <Compile Include="Assets\Scripts\EarthCentered\EarthCenteredSimController.cs" />
+    <Compile Include="Assets\Scripts\EarthCentered\Orbit Calculation\Structs\OrbitalElements.cs" />
     <Compile Include="Assets\Scripts\NBodySim\NBodySimController.cs" />
     <Compile Include="Assets\Scripts\2BodySim\TwoBodySimController.cs" />
-    <Compile Include="Assets\Scripts\EarthCentered\OrbitTracing\OrbitTracer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
