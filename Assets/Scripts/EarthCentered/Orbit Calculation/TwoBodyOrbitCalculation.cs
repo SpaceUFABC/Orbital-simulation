@@ -2,7 +2,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class OrbitTracer
+public class TwoBodyOrbitCalculation
 {
     public Satellite satellite;
     public Earth earth;
@@ -11,7 +11,7 @@ public class OrbitTracer
     private LineRenderer lineRenderer;
     public int maxSteps;
 
-    public OrbitTracer(Satellite satellite, Earth earth, float gravitationalConstant, float timeStep, int maxSteps)
+    public TwoBodyOrbitCalculation(Satellite satellite, Earth earth, float gravitationalConstant, float timeStep, int maxSteps)
     {
         this.satellite = satellite;
         this.earth = earth;
@@ -80,6 +80,8 @@ public class OrbitTracer
             i += 1;
         }
 
+        Debug.Log(momentaryOrbitalElements.Length);
+
         return momentaryOrbitalElements;
     }
 
@@ -89,7 +91,7 @@ public class OrbitTracer
 
         // Find apoapsis and periapsis from the momentary orbital elements
         float[] radiuss = new float[momentaryOrbitalElements.Length];
-        for (int j = 0; j <= radiuss.Length; j++)
+        for (int j = 0; j < radiuss.Length; j++)
         {
             radiuss[j] = momentaryOrbitalElements[j].radius;
         }
@@ -101,25 +103,10 @@ public class OrbitTracer
         orbitalElements.longitudeOfAscendingNode = GetLongitudeOfAscendingNode(momentaryOrbitalElements.Last().position, momentaryOrbitalElements.Last().velocity);
         orbitalElements.argumentOfPeriapsis = GetArgumentOfPeriapsis(momentaryOrbitalElements.Last().position, momentaryOrbitalElements.Last().velocity);
 
+        orbitalElements.positionOfApoapsis = momentaryOrbitalElements.FirstOrDefault(x => x.radius == orbitalElements.apoapsis).position;
+        orbitalElements.positionOfPeriapsis = momentaryOrbitalElements.FirstOrDefault(x => x.radius == orbitalElements.periapsis).position;
+
         return orbitalElements;
-    }
-
-    public void DrawOrbit()
-    {
-        MomentaryOrbitalElements[] momentaryOrbitalElements = CalculateOrbit();
-        //OrbitalElements orbitalElements = CalculateGlobalOrbitalElements(momentaryOrbitalElements);
-
-        // Set the number of positions in the line renderer
-        lineRenderer.positionCount = momentaryOrbitalElements.Length;
-        // Set the positions of the line renderer to the calculated positions
-        Vector3[] positions = new Vector3[momentaryOrbitalElements.Length];
-        for (int j = 0; j < momentaryOrbitalElements.Length; j++)
-        {
-            positions[j] = momentaryOrbitalElements[j].position;
-        }
-
-        lineRenderer.SetPositions(positions);
-        lineRenderer.enabled = true; // Enable the line renderer to visualize the orbit
     }
 
     private Vector3 GetAcceleration(Vector3 position)
@@ -221,22 +208,5 @@ public class OrbitTracer
     }
 }
 
-public struct OrbitalElements
-{
-    public float apoapsis; //r_a
-    public float periapsis; //r_p
-    public double semiMajorAxis;//a
-    public double eccentricity; //e
-    public double inclination; //i
-    public double longitudeOfAscendingNode; //Omega
-    public double argumentOfPeriapsis; //Little omega
-}
 
-public struct MomentaryOrbitalElements
-{
-    public float trueAnomaly; //Theta
-    public Vector3 velocity; 
-    public Vector3 position; 
-    public float radius; //r
-    public float tangentialVelocity; //v
-}
+

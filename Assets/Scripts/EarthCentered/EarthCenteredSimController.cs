@@ -1,5 +1,6 @@
 using UnityEngine;
-using static OrbitTracer;
+using static OrbitVisualization;
+using System;
 
 public class EarthCenteredSimController : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class EarthCenteredSimController : MonoBehaviour
     public float gravitationalConstant = 10f;
     public int orbitMaxSteps = 1000; // Maximum number of steps for the orbit tracer
     public Earth earth;
+    private OrbitVisualization[] orbitVisualizations; // Array to store orbit visualizations for each body
 
 
     void Awake()
@@ -15,8 +17,15 @@ public class EarthCenteredSimController : MonoBehaviour
         // Find all planet objects
         bodies = FindObjectsByType<Satellite>(FindObjectsSortMode.None);
         earth = FindFirstObjectByType<Earth>();
-    }
 
+        orbitVisualizations = new OrbitVisualization[bodies.Length];
+
+        foreach (Satellite body in bodies)
+        {
+            OrbitVisualization orbitVisualization = new OrbitVisualization(body, earth, gravitationalConstant, orbitTimeStep, this.orbitMaxSteps);
+            orbitVisualizations[Array.IndexOf(bodies, body)] = orbitVisualization; // Store the orbit visualization for each body
+        }
+    }
 
     void FixedUpdate()
     {
@@ -33,8 +42,26 @@ public class EarthCenteredSimController : MonoBehaviour
             body.updatePosition(Time.fixedDeltaTime);
         }
 
-        // Draw the orbits of each body
-        drawOrbits();
+        // Update calculations of orbit visualizations for each body
+        foreach (OrbitVisualization orbitVisualization in orbitVisualizations)
+        {
+            if (orbitVisualization != null)
+            {
+                orbitVisualization.UpdateValues();
+            }
+        } 
+    }
+
+    void Update()
+    {
+        // Update drawing of orbit visualizations for each body
+        foreach (OrbitVisualization orbitVisualization in orbitVisualizations)
+        {
+            if (orbitVisualization != null)
+            {
+                orbitVisualization.UpdateDraw();
+            }
+        } 
     }
 
     Vector3 getAcceleration(Satellite body)
@@ -47,14 +74,5 @@ public class EarthCenteredSimController : MonoBehaviour
         acceleration = direction.normalized * scalarAcceleration;
 
         return acceleration;
-    }
-
-    public void drawOrbits()
-    {
-        foreach (Satellite body in bodies)
-        {
-            OrbitTracer orbitTracer = new OrbitTracer(body, earth, gravitationalConstant, orbitTimeStep, this.orbitMaxSteps);
-            orbitTracer.DrawOrbit();
-        }
     }
 }
