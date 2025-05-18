@@ -1,2 +1,2 @@
 # Orbital-Simulation
- Obital simulation created for teaching purposes for SPACE program
+ Obital simulations created for teaching purposes as part of the SPACE extension program at Universidade Federal do ABC. 
